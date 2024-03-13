@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="FirstLab.src.controllers.AnalyticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:controllers="clr-namespace:FirstLab.src.controllers"
+             d:DataContext="{d:DesignInstance Type=controllers:AnalyticsView}"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="636"
+             Background="Transparent">
+    <Border Background="#FF412A63" CornerRadius="0, 0, 20, 0">
+        <Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left"
+                               Margin="24,29,0,0" TextWrapping="Wrap"
+                               Text="Today's analytics"
+                               Foreground="White"
+                               FontFamily="Fonts/#Dosis"
+                               FontWeight="Bold"
+                                VerticalAlignment="Top"/>
+
+                    <Border Background="White" Width="500" Height="1" Margin="24,48,112,548"/>
+                    <TextBlock FontWeight="Medium" FontFamily="Fonts/#Dosis" HorizontalAlignment="Left" Foreground="White" Margin="41,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+                        <TextBlock.Text>
+                            <Binding Path="FlashcardSetsEdited">
+                                <Binding.StringFormat>
+                                    You've edited {0} flashcard sets today.
+                                </Binding.StringFormat>
+                            </Binding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock FontWeight="Medium" FontFamily="Fonts/#Dosis" HorizontalAlignment="Left" Foreground="White" Margin="41,85,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+                        <TextBlock.Text>
+                            <Binding Path="FlashcardSetsPlayed">
+                                <Binding.StringFormat>
+                                    You've played {0} flashcard sets today.
+                                </Binding.StringFormat>
+                            </Binding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock HorizontalAlignment="Left"
+                               Margin="24,150,0,0" TextWrapping="Wrap"
+                               Text="Edits over time"
+                               Foreground="White"
+                               FontFamily="Fonts/#Dosis"
+                               FontWeight="Bold"
+                                VerticalAlignment="Top"/>
+                    <Border Background="White" Width="500" Height="1" Margin="24,20,112,277"/>
+                    <lvc:CartesianChart Name="FlashcardSetsEditedChart" Margin="20,180,100,250">
+                        <lvc:CartesianChart.Series>
+                            <lvc:LineSeries Values="{Binding AnalyticsDaysEdits}" PointGeometrySize="18">
+                                <lvc:LineSeries.Fill>
+                                    <SolidColorBrush Opacity="0"/>
+                                </lvc:LineSeries.Fill>
+                            </lvc:LineSeries>
+                        </lvc:CartesianChart.Series>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Labels="{Binding AnalyticsDaysStrings}"/>
+                        </lvc:CartesianChart.AxisX>
+                    </lvc:CartesianChart>
+                    <TextBlock HorizontalAlignment="Left"
+                               Margin="24,360,0,0" TextWrapping="Wrap"
+                               Text="Plays over time"
+                               Foreground="White"
+                               FontFamily="Fonts/#Dosis"
+                               FontWeight="Bold"
+                                VerticalAlignment="Top"/>
+                    <Border Background="White" Width="500" Height="1" Margin="-110,160,-20,0"/>
+                    <lvc:CartesianChart Name="FlashcardSetsPlayedChart" Margin="20,400,100,50">
+                        <lvc:CartesianChart.Series>
+                            <lvc:LineSeries Values="{Binding AnalyticsDaysPlays}" PointGeometrySize="18">
+                                <lvc:LineSeries.Fill>
+                                    <SolidColorBrush Opacity="0"/>
+                                </lvc:LineSeries.Fill>
+                            </lvc:LineSeries>
+                        </lvc:CartesianChart.Series>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Labels="{Binding AnalyticsDaysStrings}"/>
+                        </lvc:CartesianChart.AxisX>
+                    </lvc:CartesianChart>
+                </Grid>
+            </ScrollViewer>
+
+        </Grid>
+    </Border>
+</UserControl>

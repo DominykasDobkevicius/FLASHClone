@@ -1,0 +1,466 @@
+﻿<UserControl x:Class="FirstLab.src.controllers.FlashcardCustomization"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FirstLab.src.utilities"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="636"
+             Background="Transparent"
+             Loaded="FlashcardCustmization_Loaded"
+             MouseDown="Window_MouseDown">
+    <UserControl.Resources>
+        <local:ColorStringToBrushConverter x:Key="ColorConverter"/>
+        <local:ColorToDifficultyMessageConverter x:Key="ToDifficultyConverter"/>
+        <x:Array x:Key="ColorNames" Type="sys:String"
+                 xmlns:sys="clr-namespace:System;assembly=mscorlib">
+            <sys:String>IndianRed</sys:String>
+            <sys:String>Pink</sys:String>
+            <sys:String>Yellow</sys:String>
+            <sys:String>RoyalBlue</sys:String>
+            <sys:String>Orange</sys:String>
+        </x:Array>
+        <x:Array x:Key="Times" Type="sys:String"
+         xmlns:sys="clr-namespace:System;assembly=mscorlib">
+            <sys:String>3</sys:String>
+            <sys:String>5</sys:String>
+            <sys:String>10</sys:String>
+            <sys:String>15</sys:String>
+            <sys:String>30</sys:String>
+        </x:Array>
+    </UserControl.Resources>
+    <UserControl.InputBindings>
+        <KeyBinding Key="Left" Command="{Binding YourLeftKeyCommand}" />
+        <KeyBinding Key="Right" Command="{Binding YourRightKeyCommand}" />
+        <KeyBinding Key="Up" Command="{Binding YourUpKeyCommand}" />
+        <KeyBinding Key="Down" Command="{Binding YourDownKeyCommand}" />
+        <KeyBinding Key="Enter" Command="{Binding YourEnterKeyCommand}" />
+        <KeyBinding Key="Escape" Command="{Binding YourEscapeKeyCommand}" />
+    </UserControl.InputBindings>
+
+    <Border Background="#FFC7891B"
+            CornerRadius="0, 0, 20, 0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="360"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="436"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ^^Create the layout for the view^^-->
+
+            <Border Grid.Row="0"
+                    Background="#FF8160CC" Grid.ColumnSpan="2" Margin="99,-1,1,1">
+            </Border>
+
+            <Border Grid.Row ="0" Grid.Column="1" BorderBrush="Black" BorderThickness="0"
+                    CornerRadius="10" 
+                    Margin="46,325,226,7" Background="#FF623294"/>
+            <Image Grid.Row ="0" Margin="17,326,392,12" Source="images/timerLogo.png"
+                   Grid.Column="1"
+                   Visibility="Visible"/>
+
+            <Border Grid.Row ="0" Grid.Column="1" BorderBrush="Black" BorderThickness="0"
+                    CornerRadius="10" x:Name="BorderofColors" 
+                    Margin="260,324,20,8" Background="#FF623294"/>
+            <Image Grid.Row ="0" Margin="233,326,177,12" Source="images/colorLogo.png"
+                   Grid.Column="1"
+                   Visibility="Visible"/>
+
+
+            <ListBox Name="ListBoxFlashcards" Grid.Row="0" Background="#FFD8D88E" Grid.Column="0" Margin="0,20,0,0"
+                     ItemsSource="{Binding Flashcards}" SelectionChanged="ListBoxFlashcards_SelectionChanged"
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <!--We bind the ItemsSource property to the Flashcards property of the 
+                flashcard set, which got binded to the dataContext, you can find that in
+                flashcardcustomization constructor-->
+
+                <!-- Here I use listBox instead of ItemControl because we dont add
+                anywhere the play button so we need to be able to select the
+                items just by clicking on them, it doesnt look that pretty tho :// -->
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Cursor="Hand" Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                        <ContentPresenter />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#FFAFAF77"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#FFB54BCE" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Height="30" Text="{Binding FlashcardName}" FontFamily="Fonts/#Dosis"             
+                                   FontSize="13" VerticalAlignment="Center"
+                                   HorizontalAlignment="Center" Padding="30, 6, 30, 0" FontWeight="Medium"/>
+                        <!-- This is where the cardName of the flashcard is binded to a text
+                                         Block-->
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <ListBox Name="ColorBox" Grid.Column="1" Margin="265,322,25,6" Background="Transparent"
+                     SelectedValue="{Binding SelectedItem.FlashcardColor, ElementName=ListBoxFlashcards}"
+                     SelectionChanged="ColorBox_SelectionChanged"
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                     BorderThickness="0">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemsSource>
+                    <Binding Source="{StaticResource ColorNames}" />
+                </ListBox.ItemsSource>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Cursor="Hand" Width="15" Height="15" CornerRadius="10"
+                                Background="{Binding Converter={StaticResource ColorConverter}}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                BorderThickness="0">
+                            <TextBlock Text="{Binding}" Visibility="Collapsed"/>
+                            <Border.ToolTip>
+                                <ToolTip Content="{Binding Converter={StaticResource ToDifficultyConverter}}"/>
+                            </Border.ToolTip>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <EventSetter Event="PreviewMouseDown" Handler="ListBoxItem_PreviewMouseDown"/>
+                        <Setter Property="Margin" Value="4, 0, 4, 0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="OuterBorder"  Width="20" Height="20" Background="Transparent"
+                                            CornerRadius="10"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="OuterBorder" Property="Background" Value="#FF8160CC"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="OuterBorder" Property="Background" Value="Transparent"/>
+                                            <Setter TargetName="OuterBorder" Property="BorderBrush" Value="LightGreen"/>
+                                            <Setter TargetName="OuterBorder" Property="BorderThickness" Value="2"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+
+            <Button  Cursor="Hand" Margin="0,0,50,340" Width="50" Height="20"
+                     Grid.Row="0" Grid.Column="0"
+                     Click="AddFlashcard_Click" Background="Transparent"
+                     BorderThickness="0">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="Border" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF946614" TargetName="Border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+                <Image Source="images/plusBtn.png" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Width="20" Height="20"/>
+            </Button>
+            <Button Cursor="Hand" Margin="50,0,0,340" Width="50"  Height="20"
+                    Grid.Row="0" Grid.Column="0"
+                    Click="DeleteFlashcard_Click" Background="Transparent" 
+                    BorderThickness="0">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="Border" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF946614" TargetName="Border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+                <Image Source="images/deleteBtn2.png" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Width="15" Height="15"/>
+            </Button>
+
+            <Grid Grid.Row="0" Grid.Column="1">
+
+                <Border Margin="30,12,30,48" Name="QuestionBorder" Visibility="Collapsed"                      
+                        BorderBrush="DarkBlue" BorderThickness="1"
+                        Background="{Binding SelectedItem.FlashcardColor, ElementName=ListBoxFlashcards, Converter={StaticResource ColorConverter}}"
+                        CornerRadius="10">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="2" BlurRadius="7" Opacity="0.7" Direction="0"/>
+                    </Border.Effect>
+                    <TextBox Cursor="Hand" Name="QuestionTextBox" Background="Transparent" BorderThickness="0"
+                             VerticalContentAlignment="Center" HorizontalAlignment="center"
+                             FontFamily="Fonts/#Dosis" FontSize="12" FontWeight="Medium"
+                             IsEnabled="True" TextWrapping="Wrap" Height="280" Width="370"
+                             AcceptsReturn="true" Foreground="#FF232323"
+                             TextAlignment="Center" IsHitTestVisible="True" 
+                             Text="{Binding SelectedItem.FlashcardQuestion, ElementName=ListBoxFlashcards, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <!-- Bind the selected items (which is a flashcard) question property to the textBox to 
+                    display it-->
+                </Border>
+                <Border Margin="30,12,30,48" Name="AnswerBorder" Visibility="Visible"
+                        Background="{Binding SelectedItem.FlashcardColor, ElementName=ListBoxFlashcards, Converter={StaticResource ColorConverter}}"
+                        BorderBrush="DarkGreen" BorderThickness="1" 
+                        CornerRadius="10">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="2" BlurRadius="7" Opacity="0.7" Direction="0"/>
+                    </Border.Effect>
+                    <TextBox Cursor="Hand" Name="AnswerTextBox" Background="Transparent" BorderThickness="0"
+                             VerticalContentAlignment="Center" HorizontalAlignment="center"
+                             FontFamily="Fonts/#Dosis" FontSize="12" FontWeight="Medium"
+                             IsEnabled="True" IsHitTestVisible="True"
+                             TextWrapping="Wrap" Height="280" Width="370" TextAlignment="Center"
+                             AcceptsReturn="true" Foreground="#FF232323"
+                             Text="{Binding SelectedItem.FlashcardAnswer, ElementName=ListBoxFlashcards, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <!-- Bind the selected items (which is a flashcard) answer property to the textBox to 
+                         display it-->
+                </Border>
+            </Grid>
+
+
+            <RadioButton Cursor="Hand" GroupName="Question/Answer" Name="QuestionRadioButton" Height="20" Margin="8,133,2,207"
+                         Grid.Row="0" Grid.Column="2" Content="Question" 
+                         Click="QuestionAnswerRadioButton_Click" IsChecked="True" FontFamily="Fonts/#Dosis"
+                         FontWeight="DemiBold" FontSize="14"/>
+            <RadioButton Cursor="Hand" GroupName="Question/Answer" Name="AnswerRadioButton" Height="20" Margin="8,211,2,129" Grid.Row="0"
+                         Grid.Column="2" Content="Answer" Click="QuestionAnswerRadioButton_Click" FontFamily="Fonts/#Dosis"
+                         FontWeight="DemiBold" FontSize="14" />
+
+            <Button Cursor="Hand" Grid.Row="0" Grid.Column="2" Background="Transparent" Margin="-1, 0, 50, 310" Click="Import_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="Border" Background="Transparent" BorderThickness="1">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{Binding Background.Color, ElementName=Border}" />
+                            </Border.BorderBrush>
+                            <Grid Margin="0, 0, 0, 0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFA07323" TargetName="Border" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+                <Image Source="images/importLogo.png" Width="20" Height="20"/>
+            </Button>
+
+            <Button Cursor="Hand" Grid.Row="0" Grid.Column="2" Background="Transparent" Margin="50, 0, 0, 310" Click="Export_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="Border" Background="Transparent" BorderThickness="1">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{Binding Background.Color, ElementName=Border}" />
+                            </Border.BorderBrush>
+                            <Grid Margin="0, 0, 0, 0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFA07323" TargetName="Border" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+                <Image Source="images/exportLogo.png" Width="20" Height="20"/>
+            </Button>
+
+
+            <Button Cursor="Hand" Click="SaveFlashcardSet_Click"
+                    Background="green" Margin="50, 0,0,0"
+                    BorderThickness="0"
+                    Grid.Row="1" Grid.Column="2">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="Border" Background="{TemplateBinding Background}"                   
+                                CornerRadius="0,0,20,0">
+                            <Grid>
+                                <Image Source="images/SaveSet_Button.png"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" Width="20"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF143714" TargetName="Border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Cursor="Hand" Click="DeleteFlashcardSet_Click"
+                    Background="red" Margin="0, 0,50,0"
+                    BorderThickness="0"
+                    Grid.Row="1" Grid.Column="2">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="Border" Background="{TemplateBinding Background}"                   
+                                CornerRadius="0,0,0,0">
+                            <Grid>
+                                <Image Source="images/DeleteSet_Button.png" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" Width="20"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF640B0B" TargetName="Border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <TextBox Cursor="Hand" Name="FlashcardSetNameBox" Grid.Row="1" Grid.Column="1"
+                     TextAlignment="Left" Margin="5,5,7,5"
+                     Padding="10,5,0,0"
+                     FontFamily="Fonts/#Dosis" TextWrapping="Wrap"
+                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" FontSize="13"
+                     Text="{Binding FlashcardSetName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TextBox">
+                                    <Border Name="Border" Background="{TemplateBinding Background}"
+                                            BorderBrush="#FFC7891B"
+                                            BorderThickness="2"
+                                            CornerRadius="10, 10, 10, 10">
+                                        <Grid>
+                                            <ScrollViewer x:Name="PART_ContentHost" />
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsFocused" Value="True">
+                                            <Setter Property="Foreground" Value="Black"/>
+                                            <Setter Property="FontWeight" Value="DemiBold"/>
+                                        </Trigger>
+                                        <Trigger Property="IsFocused" Value="False">
+                                            <Setter Property="Foreground" Value="Gray"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+            <RadioButton Cursor="Hand" GroupName="Capitalized/Normal" Grid.Row="1" Grid.Column="0"
+                         Content="Capitalize" FontFamily="Fonts/#Dosis"
+                         FontSize="10" Margin="15,4,0,0" Click="CapitalizedNormalNameButton_Click"
+                         FontWeight="Medium" Padding="4,2.3,0,0"
+                         Name="CapitalizeButton"/>
+            <RadioButton Cursor="Hand" GroupName="Capitalized/Normal" Grid.Row="1" Grid.Column="0"
+                         Content="Normalize" IsChecked="True" Click="CapitalizedNormalNameButton_Click"
+                         FontFamily="Fonts/#Dosis" FontSize="10"
+                         FontWeight="Medium" Padding="4,2,0,0"
+                         Margin="15, 20 0, 0"
+                         Name="NormalizeButton"/>
+
+            <ScrollViewer Name="ErrorScrollViewer" Grid.Row="0" Grid.Column="2"
+                          Margin="5, 250, 0, 20" FontFamily="Fonts/#Dosis"
+                          IsEnabled="true" BorderThickness="0" VerticalScrollBarVisibility="Disabled" Cursor="Arrow">
+                <TextBox Background="#FFC7891B" Foreground="Red"  Name="errorText"
+                              FontWeight="Bold" FontSize="12"
+                              TextAlignment="Left"
+                              TextWrapping="Wrap" IsReadOnly="True"
+                              BorderThickness="0" Cursor="Arrow" Height="70"/>
+            </ScrollViewer>
+            <ListBox Name="timerListBox" Grid.Column="1" Margin="46,327,226,9" Background="Transparent"
+                     SelectedValue="{Binding SelectedItem.FlashcardTimer, ElementName=ListBoxFlashcards}"
+                     SelectionChanged="TimerListBox_SelectionChanged"
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     BorderThickness="0">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemsSource>
+                    <Binding Source="{StaticResource Times}" />
+                </ListBox.ItemsSource>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock x:Name="textBlockOfTimer" Text="{Binding}"
+                                   FontFamily="fonts/#Dosis" 
+                                   FontWeight="SemiBold"
+                                   FontSize="11"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <EventSetter Event="PreviewMouseDown" Handler="ListBoxItem_PreviewMouseDown"/>
+                        <Setter Property="Margin" Value="4, 0, 4, 0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Cursor="Hand" x:Name="OuterBorder"  Width="22" Height="22" Background="Transparent"
+                                            CornerRadius="10"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="OuterBorder" Property="Background" Value="#FF8160CC"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="OuterBorder" Property="Background" Value="Transparent"/>
+                                            <Setter TargetName="OuterBorder" Property="BorderBrush" Value="LightGreen"/>
+                                            <Setter TargetName="OuterBorder" Property="BorderThickness" Value="2"/>
+
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </Grid>
+    </Border>
+
+
+
+
+</UserControl>

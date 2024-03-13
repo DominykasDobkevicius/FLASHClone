@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Update="src\controllers\FlashcardCustomization.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="src\controllers\FlashcardOptions.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="src\controllers\HomeView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="src\controllers\LogsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="src\controllers\ControlsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="src\views\AnalyticsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="src\views\ControlsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="src\views\FlashcardCustomization.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="src\views\FlashcardOptions.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="src\views\HomeView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="src\views\LogsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="src\views\MenuWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>
