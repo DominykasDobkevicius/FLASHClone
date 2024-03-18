@@ -66,7 +66,7 @@ public partial class MenuWindow : Window
     private void AccessAnalytics_Click(object sender, RoutedEventArgs e)
     {
         _menuWindowService.CheckSenderOfTheButtonAndChangeView(sender, logsView, homeView, analyticsView, "Analytics");
-        analyticsView.InitializeAnalyticsTask();
+        analyticsView.ReloadAnalyticsTask();
     }
 
     private void Controls_Click(object sender, RoutedEventArgs e)

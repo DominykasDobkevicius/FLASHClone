@@ -78,13 +78,15 @@ namespace FirstLab.src.controllers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public static Func<double, string> FormatAsInteger = value => value.ToString();
+
         public AnalyticsView(IAnalyticsViewService analyticsViewService)
         {
             InitializeComponent();
             _analyticsViewService = analyticsViewService;
         }
 
-        public async void InitializeAnalyticsTask()
+        public async void ReloadAnalyticsTask()
         {
             AnalyticsDays = await _analyticsViewService.InitializeAnalytics();
             FlashcardSetsEdited = _analyticsViewService.GetFlashcardSetsEditedOnDate(AnalyticsDays, DateTime.UtcNow.Date);

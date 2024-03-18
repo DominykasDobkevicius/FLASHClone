@@ -50,7 +50,7 @@
                     <Border Background="White" Width="500" Height="1" Margin="24,20,112,277"/>
                     <lvc:CartesianChart Name="FlashcardSetsEditedChart" Margin="20,180,100,250">
                         <lvc:CartesianChart.Series>
-                            <lvc:LineSeries Values="{Binding AnalyticsDaysEdits}" PointGeometrySize="18">
+                            <lvc:LineSeries Title="Edits" Values="{Binding AnalyticsDaysEdits}" PointGeometrySize="18">
                                 <lvc:LineSeries.Fill>
                                     <SolidColorBrush Opacity="0"/>
                                 </lvc:LineSeries.Fill>
@@ -59,6 +59,13 @@
                         <lvc:CartesianChart.AxisX>
                             <lvc:Axis Labels="{Binding AnalyticsDaysStrings}"/>
                         </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis MinValue="0" LabelFormatter="{x:Static controllers:AnalyticsView.FormatAsInteger}">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator Step="1"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
                     <TextBlock HorizontalAlignment="Left"
                                Margin="24,360,0,0" TextWrapping="Wrap"
@@ -70,7 +77,7 @@
                     <Border Background="White" Width="500" Height="1" Margin="-110,160,-20,0"/>
                     <lvc:CartesianChart Name="FlashcardSetsPlayedChart" Margin="20,400,100,50">
                         <lvc:CartesianChart.Series>
-                            <lvc:LineSeries Values="{Binding AnalyticsDaysPlays}" PointGeometrySize="18">
+                            <lvc:LineSeries Title="Plays" Values="{Binding AnalyticsDaysPlays}" PointGeometrySize="18">
                                 <lvc:LineSeries.Fill>
                                     <SolidColorBrush Opacity="0"/>
                                 </lvc:LineSeries.Fill>
@@ -79,6 +86,13 @@
                         <lvc:CartesianChart.AxisX>
                             <lvc:Axis Labels="{Binding AnalyticsDaysStrings}"/>
                         </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis MinValue="0" LabelFormatter="{x:Static controllers:AnalyticsView.FormatAsInteger}">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator Step="1"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
                 </Grid>
             </ScrollViewer>
