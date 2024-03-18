@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using LiveCharts;
 using LiveCharts.Defaults;
+using System.Linq;
 
 namespace FirstLab.src.controllers
 {
@@ -80,6 +81,11 @@ namespace FirstLab.src.controllers
 
         public static Func<double, string> FormatAsInteger = value => Math.Round(value).ToString("0");
 
+        private void OnDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ReloadAnalyticsGraphs(StartDatePicker.SelectedDate ?? DateTime.MinValue, EndDatePicker.SelectedDate ?? DateTime.MaxValue);
+        }
+
         public AnalyticsView(IAnalyticsViewService analyticsViewService)
         {
             InitializeComponent();
@@ -91,9 +97,20 @@ namespace FirstLab.src.controllers
             AnalyticsDays = await _analyticsViewService.InitializeAnalytics();
             FlashcardSetsEdited = _analyticsViewService.GetFlashcardSetsEditedOnDate(AnalyticsDays, DateTime.UtcNow.Date);
             FlashcardSetsPlayed = _analyticsViewService.GetFlashcardSetsPlayedOnDate(AnalyticsDays, DateTime.UtcNow.Date);
-            
+
+            ReloadAnalyticsGraphs(DateTime.MinValue, DateTime.MaxValue);
+
+            DataContext = this;
+        }
+
+        public void ReloadAnalyticsGraphs(DateTime graphsStartDay, DateTime graphsEndDay)
+        {
+            var AnalyticsDaysFilter = new ObservableCollection<AnalyticsDay>(AnalyticsDays
+                .Where(x => x.Date >= graphsStartDay && x.Date <= graphsEndDay)
+                .OrderBy(x => x.Date));
+
             AnalyticsDaysStrings.Clear();
-            foreach(var analyticsDay in AnalyticsDays)
+            foreach(var analyticsDay in AnalyticsDaysFilter)
             {
                 AnalyticsDaysStrings.Add(analyticsDay.Date.ToString("yyyy-MM-dd"));
             }
@@ -102,11 +119,9 @@ namespace FirstLab.src.controllers
             AnalyticsDaysPlays.Clear();
             for(int i = 0; i < AnalyticsDaysStrings.Count; ++i)
             {
-                AnalyticsDaysEdits.Add(new ObservablePoint(i, AnalyticsDays[i].FlashcardSetsEdited));
-                AnalyticsDaysPlays.Add(new ObservablePoint(i, AnalyticsDays[i].FlashcardSetsPlayed));
+                AnalyticsDaysEdits.Add(new ObservablePoint(i, AnalyticsDaysFilter[i].FlashcardSetsEdited));
+                AnalyticsDaysPlays.Add(new ObservablePoint(i, AnalyticsDaysFilter[i].FlashcardSetsPlayed));
             }
-
-            DataContext = this;
         }
     }
 }

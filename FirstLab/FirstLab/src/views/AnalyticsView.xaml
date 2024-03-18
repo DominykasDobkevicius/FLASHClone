@@ -48,7 +48,13 @@
                                FontWeight="Bold"
                                 VerticalAlignment="Top"/>
                     <Border Background="White" Width="500" Height="1" Margin="24,20,112,277"/>
-                    <lvc:CartesianChart Name="FlashcardSetsEditedChart" Margin="20,180,100,250">
+                    <StackPanel Orientation="Horizontal" Margin="24,175">
+                        <TextBlock Text="Start date: " Foreground="White" Margin="0,2"/>
+                        <DatePicker Name="StartDatePicker" SelectedDateChanged="OnDateChanged" BorderThickness="0" FirstDayOfWeek="Monday" Text="From..."/>
+                        <TextBlock Text="End date: " Foreground="White" Margin="15,2,0,0"/>
+                        <DatePicker Name="EndDatePicker" SelectedDateChanged="OnDateChanged" BorderThickness="0" FirstDayOfWeek="Monday" Text="To..."/>
+                    </StackPanel>
+                    <lvc:CartesianChart Name="FlashcardSetsEditedChart" Margin="20,190,100,240">
                         <lvc:CartesianChart.Series>
                             <lvc:LineSeries Title="Edits" Values="{Binding AnalyticsDaysEdits}" PointGeometrySize="18">
                                 <lvc:LineSeries.Fill>
