@@ -78,7 +78,7 @@ namespace FirstLab.src.controllers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public static Func<double, string> FormatAsInteger = value => value.ToString();
+        public static Func<double, string> FormatAsInteger = value => Math.Round(value).ToString("0");
 
         public AnalyticsView(IAnalyticsViewService analyticsViewService)
         {
