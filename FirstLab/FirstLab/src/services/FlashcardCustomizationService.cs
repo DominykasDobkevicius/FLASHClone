@@ -24,14 +24,11 @@ public class FlashcardCustomizationService : IFlashcardCustomizationService
 
     IDatabaseRepository _databaseRepository;
 
-    IAnalyticsViewService _analyticsViewService;
-
-    public FlashcardCustomizationService(IFactoryContainer factoryContainer, IFlashcardSetMapper flashcardSetMapper, IDatabaseRepository databaseRepository, IAnalyticsViewService analyticsViewService)
+    public FlashcardCustomizationService(IFactoryContainer factoryContainer, IFlashcardSetMapper flashcardSetMapper, IDatabaseRepository databaseRepository)
     {
         _factoryContainer = factoryContainer;
         _flashcardSetMapper = flashcardSetMapper;
         _databaseRepository = databaseRepository;
-        _analyticsViewService = analyticsViewService;
     }
 
     public async Task RemoveSetFromDatabase(FlashcardSet flashcardSet, FlashcardOptions flashcardOptionsReference)

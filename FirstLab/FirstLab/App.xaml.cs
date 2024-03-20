@@ -33,8 +33,7 @@ public partial class App : Application
                     var actualService = new FlashcardCustomizationService(
                         provider.GetRequiredService<IFactoryContainer>(),
                         provider.GetRequiredService<IFlashcardSetMapper>(),
-                        provider.GetRequiredService<IDatabaseRepository>(),
-                        provider.GetRequiredService<IAnalyticsViewService>());
+                        provider.GetRequiredService<IDatabaseRepository>());
 
                     return proxyGenerator.CreateInterfaceProxyWithTarget<IFlashcardCustomizationService>(actualService, interceptor);
                 });
