@@ -109,18 +109,42 @@ namespace FirstLab.src.controllers
                 .Where(x => x.Date >= graphsStartDay && x.Date <= graphsEndDay)
                 .OrderBy(x => x.Date));
 
-            AnalyticsDaysStrings.Clear();
-            foreach(var analyticsDay in AnalyticsDaysFilter)
+            if(AnalyticsDaysFilter.Count > 0)
             {
-                AnalyticsDaysStrings.Add(analyticsDay.Date.ToString("yyyy-MM-dd"));
-            }
+                DateTime lowestDay = AnalyticsDaysFilter.Min(x => x.Date);
+                DateTime highestDay = AnalyticsDaysFilter.Max(x => x.Date);
 
-            AnalyticsDaysEdits.Clear();
-            AnalyticsDaysPlays.Clear();
-            for(int i = 0; i < AnalyticsDaysStrings.Count; ++i)
+                AnalyticsDaysStrings.Clear();
+                for(DateTime d = lowestDay; d <= highestDay; d = d.AddDays(1))
+                {
+                    AnalyticsDaysStrings.Add(d.ToString("yyyy-MM-dd"));
+                }
+
+                AnalyticsDaysEdits.Clear();
+                AnalyticsDaysPlays.Clear();
+                HashSet<DateTime> dates = new(AnalyticsDaysFilter.Select(x => x.Date));
+                int i = 0, j = 0;
+                for(DateTime d = lowestDay; d <= highestDay; d = d.AddDays(1))
+                {
+                    if(dates.Contains(d))
+                    {
+                        AnalyticsDaysEdits.Add(new ObservablePoint(i, AnalyticsDaysFilter[j].FlashcardSetsEdited));
+                        AnalyticsDaysPlays.Add(new ObservablePoint(i, AnalyticsDaysFilter[j].FlashcardSetsPlayed));
+                        ++j;
+                    }
+                    else
+                    {
+                        AnalyticsDaysEdits.Add(new ObservablePoint(i, 0));
+                        AnalyticsDaysPlays.Add(new ObservablePoint(i, 0));
+                    }
+                    ++i;
+                }
+            }
+            else
             {
-                AnalyticsDaysEdits.Add(new ObservablePoint(i, AnalyticsDaysFilter[i].FlashcardSetsEdited));
-                AnalyticsDaysPlays.Add(new ObservablePoint(i, AnalyticsDaysFilter[i].FlashcardSetsPlayed));
+                AnalyticsDaysStrings.Clear();
+                AnalyticsDaysEdits.Clear();
+                AnalyticsDaysPlays.Clear();
             }
         }
     }
